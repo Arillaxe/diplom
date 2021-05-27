@@ -1,25 +1,32 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { Provider } from 'react-redux';
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import { NotificationContainer } from 'react-notifications';
+import CheckAuth from './lib/CheckAuth';
+import RoleRedirecter from './lib/RoleRedirecter';
+import store from './lib/store';
+import { Login, Home } from './pages';
+import 'react-notifications/lib/notifications.css';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Provider store={store}>
+      <Router>
+        <CheckAuth />
+        <Switch>
+          <Route path="/login">
+            <Login />
+          </Route>
+          <Route path="/">
+            <RoleRedirecter />
+            <Switch>
+              <Route path="/users"><Home /></Route>
+              <Route path="/rooms"><Home /></Route>
+            </Switch>
+          </Route>
+        </Switch>
+      </Router>
+      <NotificationContainer />
+    </Provider>
   );
 }
 

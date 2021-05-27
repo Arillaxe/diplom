@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+
+  db:
+    image: postgres
+    restart: always
+    volumes:
+      - ./db/:/var/lib/postgresql
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+
+  backend:
+    build: ./server
+    volumes:
+      - /app/node_modules/
+      - ./server:/app
+    environment:
+      DB_HOST: db
+      DB_USERNAME: ${POSTGRES_USER}
+      DB_PASSWORD: ${POSTGRES_PASSWORD}
+      DB_DATABASE: ${POSTGRES_DB}
+      JWT_SECRET: ${JWT_SECRET}
+      GMAIL_LOGIN: ${GMAIL_LOGIN}
+      GMAIL_PASSWORD: ${GMAIL_PASSWORD}
+      PASSWORD_RESET_TTL: ${PASSWORD_RESET_TTL}
+    ports:
+      - "${BACKEND_PORT}:${BACKEND_PORT}"
+      # - "9229:9229"
+    depends_on: 
+      - db
+
+  frontend:
+    build: ./
+    volumes:
+      - /app/node_modules/
+      - ./:/app
+    environment:
+      CHOKIDAR_USEPOLLING: 'true'
+      REACT_APP_SERVER_HOST: http://localhost:${BACKEND_PORT}
+    ports:
+      - "${FRONTEND_PORT}:${FRONTEND_PORT}"
+    depends_on:
+      - backend
