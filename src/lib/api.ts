@@ -153,6 +153,6 @@ class API {
   }
 }
 
-const apiInstance = new API(process.env.REACT_APP_SERVER_HOST);
+const apiInstance = new API(process.env.REACT_APP_SERVER_HOST || '');
 
 export default apiInstance;
