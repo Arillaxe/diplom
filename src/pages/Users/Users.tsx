@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import moment from 'moment';
 import { Pane, Table, Button, EditIcon, IconButton, TrashIcon } from 'evergreen-ui';
 import { NotificationManager } from 'react-notifications';
-import { AddUser, EditUser } from '..';
+import { AddUser, EditUser, Base } from '..';
 import API from '../../lib/api';
 import { formType } from '../AddUser/AddUser';
 
@@ -78,45 +78,47 @@ const Users = () => {
   };
 
   return (
-    <Pane display="flex" justifyContent="center" marginTop="15px">
-      <Pane width="100%" display="flex" flexDirection="column">
-        <Button appearance="primary" marginBottom="15px" marginRight="15px" alignSelf="flex-end" onClick={() => setCreateDialogShown(true)}>Добавить пользователя</Button>
-        <Table>
-          <Table.Head>
-            <Table.TextHeaderCell>ID</Table.TextHeaderCell>
-            <Table.TextHeaderCell>ФИО</Table.TextHeaderCell>
-            <Table.TextHeaderCell>Договор</Table.TextHeaderCell>
-            <Table.TextHeaderCell>Телефон</Table.TextHeaderCell>
-            <Table.TextHeaderCell>Почта</Table.TextHeaderCell>
-            <Table.TextHeaderCell>Роли</Table.TextHeaderCell>
-            <Table.TextHeaderCell>Создан</Table.TextHeaderCell>
-            <Table.TextHeaderCell>Изменен</Table.TextHeaderCell>
-            <Table.TextHeaderCell></Table.TextHeaderCell>
-          </Table.Head>
-          <Table.Body>
-            {users.map((user: any) => (
-              <Table.Row key={user.id}>
-                <Table.TextCell>{user.id}</Table.TextCell>
-                <Table.TextCell>{`${user.lastName} ${user.name} ${user.surname}`}</Table.TextCell>
-                <Table.TextCell>{user.contractNumber}</Table.TextCell>
-                <Table.TextCell>{user.phone}</Table.TextCell>
-                <Table.TextCell>{user.email}</Table.TextCell>
-                <Table.TextCell>{user.roles.join(' ')}</Table.TextCell>
-                <Table.TextCell>{moment(user.createdAt).fromNow()}</Table.TextCell>
-                <Table.TextCell>{moment(user.updatedAt).fromNow()}</Table.TextCell>
-                <Table.Cell>
-                  <IconButton icon={EditIcon} marginRight="10px" onClick={() => { setEditUser(user); setEditDialogShown(true); }} />
-                  <IconButton icon={TrashIcon} onClick={() => deleteUser(user.id)} />
-                </Table.Cell>
-              </Table.Row>
-            ))}
-          </Table.Body>
-        </Table>
-      </Pane>
+    <Base>
+      <Pane display="flex" justifyContent="center" marginTop="15px">
+        <Pane width="100%" display="flex" flexDirection="column">
+          <Button appearance="primary" marginBottom="15px" marginRight="15px" alignSelf="flex-end" onClick={() => setCreateDialogShown(true)}>Добавить пользователя</Button>
+          <Table>
+            <Table.Head>
+              <Table.TextHeaderCell>ID</Table.TextHeaderCell>
+              <Table.TextHeaderCell>ФИО</Table.TextHeaderCell>
+              <Table.TextHeaderCell>Договор</Table.TextHeaderCell>
+              <Table.TextHeaderCell>Телефон</Table.TextHeaderCell>
+              <Table.TextHeaderCell>Почта</Table.TextHeaderCell>
+              <Table.TextHeaderCell>Роли</Table.TextHeaderCell>
+              <Table.TextHeaderCell>Создан</Table.TextHeaderCell>
+              <Table.TextHeaderCell>Изменен</Table.TextHeaderCell>
+              <Table.TextHeaderCell></Table.TextHeaderCell>
+            </Table.Head>
+            <Table.Body>
+              {users.map((user: any) => (
+                <Table.Row key={user.id}>
+                  <Table.TextCell>{user.id}</Table.TextCell>
+                  <Table.TextCell>{`${user.lastName} ${user.name} ${user.surname}`}</Table.TextCell>
+                  <Table.TextCell>{user.contractNumber}</Table.TextCell>
+                  <Table.TextCell>{user.phone}</Table.TextCell>
+                  <Table.TextCell>{user.email}</Table.TextCell>
+                  <Table.TextCell>{user.roles.join(' ')}</Table.TextCell>
+                  <Table.TextCell>{moment(user.createdAt).fromNow()}</Table.TextCell>
+                  <Table.TextCell>{moment(user.updatedAt).fromNow()}</Table.TextCell>
+                  <Table.Cell>
+                    <IconButton icon={EditIcon} marginRight="10px" onClick={() => { setEditUser(user); setEditDialogShown(true); }} />
+                    <IconButton icon={TrashIcon} onClick={() => deleteUser(user.id)} />
+                  </Table.Cell>
+                </Table.Row>
+              ))}
+            </Table.Body>
+          </Table>
+        </Pane>
 
-      <AddUser isShown={createDialogShown} setIsShown={setCreateDialogShown} onSubmit={submitCreateUser} />
-      <EditUser isShown={editDialogShown} setIsShown={setEditDialogShown} onSubmit={submitEditUser} user={editUser} />
-    </Pane>
+        <AddUser isShown={createDialogShown} setIsShown={setCreateDialogShown} onSubmit={submitCreateUser} />
+        <EditUser isShown={editDialogShown} setIsShown={setEditDialogShown} onSubmit={submitEditUser} user={editUser} />
+      </Pane>
+    </Base>
   );
 };
 

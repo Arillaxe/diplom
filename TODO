@@ -1,10 +1,11 @@
-TODO
-
-Email password
-Frontend covering backend functionality
-Rooms relations to users
-
-
-
-
-Email or phone or conractNumber: atleast one should be specified
+1) Rework UI
+2) excel users
+3) Add order
+4) Rating - new = 100, existing = 50
+5) Choose place as Student
+6) Dekanat and admin verify the request
+7) Time margins
+8) Upload images for room with date and desciption
+9) Rooms to verify for comendant
+10) ? Comendant can change students room
+11) 

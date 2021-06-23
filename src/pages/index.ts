@@ -1,5 +1,6 @@
 export { default as AddRoom } from './AddRoom';
 export { default as AddUser } from './AddUser';
+export { default as Base } from './Base';
 export { default as EditRoom } from './EditRoom';
 export { default as EditUser } from './EditUser';
 export { default as Home } from './Home';
