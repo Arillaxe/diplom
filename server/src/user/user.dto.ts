@@ -1,4 +1,4 @@
-import { IsAlphanumeric, IsArray, IsEmail, IsEnum, IsNotEmpty, IsOptional, IsPhoneNumber, IsString } from 'class-validator';
+import { IsAlphanumeric, IsArray, IsEmail, IsEnum, IsInt, IsNotEmpty, IsOptional, IsPhoneNumber, IsString } from 'class-validator';
 import { Transform } from 'class-transformer';
 import { Role } from 'src/roles/role.enum';
 
@@ -17,6 +17,40 @@ export class CreateUserDto {
   @Transform(({ value }: { value: string }) => value.trim())
   @IsNotEmpty()
   readonly surname: string;
+
+  @IsString()
+  @Transform(({ value }: { value: string }) => value.trim())
+  @IsNotEmpty()
+  readonly birthDate: string;
+
+  @IsString()
+  @Transform(({ value }: { value: string }) => value.trim())
+  @IsNotEmpty()
+  readonly documentType: string;
+
+  @IsString()
+  @Transform(({ value }: { value: string }) => value.trim())
+  @IsNotEmpty()
+  readonly documentData: string;
+
+  @IsString()
+  @Transform(({ value }: { value: string }) => value.trim())
+  @IsNotEmpty()
+  readonly faculty: string;
+
+  @IsString()
+  @Transform(({ value }: { value: string }) => value.trim())
+  @IsNotEmpty()
+  readonly studyType: string;
+
+  @IsString()
+  @Transform(({ value }: { value: string }) => value.trim())
+  @IsNotEmpty()
+  readonly course: string;
+
+  @IsInt()
+  @IsNotEmpty()
+  readonly rating: number;
 
   @IsString()
   @Transform(({ value }: { value: string }) => value.trim())
@@ -52,6 +86,47 @@ export class UpdateUserDto {
   @IsNotEmpty()
   @IsOptional()
   readonly surname?: string;
+
+  @IsString()
+  @Transform(({ value }: { value: string }) => value.trim())
+  @IsNotEmpty()
+  @IsOptional()
+  readonly birthDate?: string;
+
+  @IsString()
+  @Transform(({ value }: { value: string }) => value.trim())
+  @IsNotEmpty()
+  @IsOptional()
+  readonly documentType?: string;
+
+  @IsString()
+  @Transform(({ value }: { value: string }) => value.trim())
+  @IsNotEmpty()
+  @IsOptional()
+  readonly documentData?: string;
+
+  @IsString()
+  @Transform(({ value }: { value: string }) => value.trim())
+  @IsNotEmpty()
+  @IsOptional()
+  readonly faculty?: string;
+
+  @IsString()
+  @Transform(({ value }: { value: string }) => value.trim())
+  @IsNotEmpty()
+  @IsOptional()
+  readonly studyType?: string;
+
+  @IsString()
+  @Transform(({ value }: { value: string }) => value.trim())
+  @IsNotEmpty()
+  @IsOptional()
+  readonly course?: string;
+
+  @IsInt()
+  @IsNotEmpty()
+  @IsOptional()
+  readonly rating?: number;
 
   @IsString()
   @Transform(({ value }: { value: string }) => value.trim())

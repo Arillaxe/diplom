@@ -6,6 +6,7 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../roles/roles.guard';
 import { RoomService } from './room.service';
 import { CreateRoomDto, UpdateRoomDto } from './room.dto';
+import { Query } from '@nestjs/common';
 
 @Controller('room')
 export class RoomController {
@@ -14,11 +15,12 @@ export class RoomController {
   @Get()
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.Admin, Role.Dekanat)
-  async login(@Res() res: Response): Promise<any> {
+  async login(@Res() res: Response, @Query() query): Promise<any> {
     try {
-      const room = await this.roomService.findAll();
+      const { offset, limit } = query;
+      const { rooms, total } = await this.roomService.findAll({ offset, limit });
 
-      res.json(room);
+      res.json({ rooms, total });
     } catch (e) {
       res.status(400).json(e);
     }
@@ -31,7 +33,7 @@ export class RoomController {
     try {
       const room = await this.roomService.create(roomDto);
 
-      res.json({ room});
+      res.json({ room });
     } catch (e) {
       res.status(400).json(e);
     }
@@ -44,7 +46,7 @@ export class RoomController {
     try {
       const room = await this.roomService.update(roomDto);
 
-      res.json({ room});
+      res.json({ room });
     } catch (e) {
       res.status(400).json(e);
     }

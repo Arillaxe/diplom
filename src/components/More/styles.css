@@ -1,0 +1,56 @@
+.more {
+  position: relative;
+}
+
+.more-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #fff;
+  padding: 10px 15px;
+  box-shadow: 0 1px 3px 0 rgb(0 0 0 / 20%);
+  border-radius: 3px;
+  cursor: pointer;
+  font-weight: bold;
+  color: #16325c;
+}
+
+.more-button.active {
+  color: #0070d2;
+}
+
+.more-dropdown {
+  position: absolute;
+  top: 46px;
+  right: 0;
+  width: 300px;
+  background-color: #fff;
+  box-shadow: 0 2px 8px 0 rgb(0 0 0 / 25%);
+  padding: 5px 0;
+  border-radius: 4px;
+  z-index: 1;
+}
+
+.more-item {
+  color: #696969;
+  padding: 9px 50px 9px 40px;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.more-item.disabled {
+  color:rgba(0,0,0,0.3);
+}
+
+.more-item:not(.disabled):hover {
+  color: #fff;
+  background: #1d81e2;
+}
+
+.more-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}

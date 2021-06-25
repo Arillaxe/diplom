@@ -1,5 +1,6 @@
-import { useState } from 'react';
-import { Dialog, TextInputField, Pane, Checkbox, Button } from 'evergreen-ui';
+import { useState, useEffect } from 'react';
+import { Dialog, TextInputField, Pane, Checkbox, Button, Select, Label } from 'evergreen-ui';
+import API from '../../lib/api';
 
 type propTypes = {
   isShown: boolean;
@@ -12,6 +13,13 @@ export type formType = {
   lastName: string;
   name: string;
   surname: string;
+  birthDate: string;
+  documentType: string;
+  documentData: string;
+  faculty: string;
+  studyType: string;
+  course: string;
+  rating: string;
   contractNumber: string;
   phone: string;
   email: string;
@@ -26,6 +34,13 @@ type formErrorsType = {
   lastName: string;
   name: string;
   surname: string;
+  birthDate: string;
+  documentType: string;
+  documentData: string;
+  faculty: string;
+  studyType: string;
+  course: string;
+  rating: string;
   contractNumber: string;
   phone: string;
   email: string;
@@ -41,6 +56,13 @@ const EditUser = (props: propTypes) => {
     lastName: '',
     name: '',
     surname: '',
+    birthDate: '',
+    documentType: '',
+    documentData: '',
+    faculty: '',
+    studyType: '',
+    course: '',
+    rating: '',
     contractNumber: '',
     phone: '',
     email: '',
@@ -52,6 +74,13 @@ const EditUser = (props: propTypes) => {
       lastName: '',
       name: '',
       surname: '',
+      birthDate: '',
+      documentType: '',
+      documentData: '',
+      faculty: '',
+      studyType: '',
+      course: '',
+      rating: '',
       contractNumber: '',
       phone: '',
       email: '',
@@ -79,6 +108,13 @@ const EditUser = (props: propTypes) => {
       lastName: '',
       name: '',
       surname: '',
+      birthDate: '',
+      documentType: '',
+      documentData: '',
+      faculty: '',
+      studyType: '',
+      course: '',
+      rating: '',
       contractNumber: '',
       phone: '',
       email: '',
@@ -92,6 +128,13 @@ const EditUser = (props: propTypes) => {
         lastName: '',
         name: '',
         surname: '',
+        birthDate: '',
+        documentType: '',
+        documentData: '',
+        faculty: '',
+        studyType: '',
+        course: '',
+        rating: '',
         contractNumber: '',
         phone: '',
         email: '',
@@ -101,6 +144,31 @@ const EditUser = (props: propTypes) => {
       onSubmit(formData);
     }
   }
+  const [documentType, setDocumentType] = useState('паспорт');
+  const [faculty, setFaculty] = useState('');
+  const [studyType, setStudyType] = useState('очная');
+  const [course, setCourse] = useState('');
+  const [courses, setCourses] = useState([]);
+  const [faculties, setFaculties] = useState([]);
+
+  const getCourses = async () => {
+    const token = localStorage.getItem('token') || '';
+    const { courses } = await API.getCourses({ token, offset: 0, limit: 1000 });
+
+    setCourses(courses);
+  }
+
+  const getFaculties = async () => {
+    const token = localStorage.getItem('token') || '';
+    const { faculties } = await API.getFaculties({ token, offset: 0, limit: 1000 });
+
+    setFaculties(faculties);
+  }
+
+  useEffect(() => {
+    getCourses();
+    getFaculties();
+  }, []);
 
   return (
     <Dialog
@@ -134,6 +202,82 @@ const EditUser = (props: propTypes) => {
           value={formData.surname}
           validationMessage={formErrors['surname'] || false}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, surname: e.target.value })}
+        />
+        <TextInputField
+          marginBottom="15px"
+          label="Дата рождения"
+          name="birthDate"
+          value={formData.birthDate}
+          validationMessage={formErrors['birthDate'] || false}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, birthDate: e.target.value })}
+        />
+        <Pane marginBottom="15px" width="100%">
+          <Label>Вид документа</Label>
+          <Select
+            width="100%"
+            marginTop="5px"
+            value={formData.documentType}
+            onChange={(e: any) => setFormData({ ...formData, documentType: e.target.value })}
+          >
+            <option value="паспорт">паспорт</option>
+          </Select>
+        </Pane>
+        <TextInputField
+          marginBottom="15px"
+          label="Данные документа"
+          name="documentData"
+          value={formData.documentData}
+          validationMessage={formErrors['documentData'] || false}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, documentData: e.target.value })}
+        />
+        <Pane marginBottom="15px" width="100%">
+          <Label>Факультет</Label>
+          <Select
+            width="100%"
+            marginTop="5px"
+            value={formData.faculty}
+            onChange={(e: any) => setFormData({ ...formData, faculty: e.target.value })}
+          >
+            {faculties.map((faculty: any) => (
+              <option value={faculty.title}>{faculty.title}</option>
+            ))}
+            
+          </Select>
+        </Pane>
+        <Pane marginBottom="15px" width="100%">
+          <Label>Форма обучения</Label>
+          <Select
+            width="100%"
+            marginTop="5px"
+            value={formData.studyType}
+            onChange={(e: any) => setFormData({ ...formData, studyType: e.target.value })}
+          >
+            <option value="очная">очная</option>
+            <option value="заочная">заочная</option>
+          </Select>
+        </Pane>
+        <Pane marginBottom="15px" width="100%">
+          <Label>Курс</Label>
+          <Select
+            width="100%"
+            marginTop="5px"
+            value={formData.course}
+            onChange={(e: any) => setFormData({ ...formData, course: e.target.value })}
+          >
+            {courses.map((course: any) => (
+              <option value={course.title}>{course.title}</option>
+            ))}
+            
+          </Select>
+        </Pane>
+        <TextInputField
+          marginBottom="15px"
+          label="Рейтинг"
+          type="number"
+          name="rating"
+          value={formData.rating}
+          validationMessage={formErrors['rating'] || false}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, rating: e.target.value })}
         />
         <TextInputField
           marginBottom="15px"

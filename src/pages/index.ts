@@ -1,8 +1,14 @@
+export { default as AddCourse } from './AddCourse';
+export { default as AddFaculty } from './AddFaculty';
 export { default as AddRoom } from './AddRoom';
 export { default as AddUser } from './AddUser';
 export { default as Base } from './Base';
+export { default as Courses } from './Courses';
+export { default as EditCourse } from './EditCourse';
+export { default as EditFaculty } from './EditFaculty';
 export { default as EditRoom } from './EditRoom';
 export { default as EditUser } from './EditUser';
+export { default as Faculties } from './Faculties';
 export { default as Home } from './Home';
 export { default as Login } from './Login';
 export { default as RoomPhoto } from './RoomPhoto';

@@ -12,6 +12,8 @@ type userExistsDto = {
 
 type getUserWithTokenDto = {
   token: string;
+  offset?: number;
+  limit?: number;
 }
 
 type createUserDto = {
@@ -47,11 +49,32 @@ type deleteRoomDto = {
   roomId: number;
 };
 
+type createCourseDto = {
+  token: string;
+  formData: {
+    title: string;
+  };
+}
+
+type deleteCourseDto = {
+  token: string;
+  courseId: number;
+};
+
 class API {
   private serverUrl: string;
 
   constructor(serverUrl: string) {
     this.serverUrl = serverUrl;
+
+    axios.interceptors.response.use((res) => res, (err) => {
+      if (err.response.status === 401) {
+        localStorage.clear();
+        window.location.replace('/login');
+      }
+
+      return Promise.reject(err);
+    });
   }
 
   async userExists({ login }: userExistsDto) {
@@ -76,8 +99,8 @@ class API {
     return response.data;
   }
 
-  async getUsers({ token }: getUserWithTokenDto) {
-    const response = await axios.get(`${this.serverUrl}/user`, {
+  async getUsers({ token, offset = 0, limit = 50 }: getUserWithTokenDto) {
+    const response = await axios.get(`${this.serverUrl}/user?offset=${offset}&limit=${limit}`, {
       headers: {
         'Authorization': `Bearer ${token}`,
       },
@@ -114,8 +137,8 @@ class API {
     });
   }
 
-  async getRooms({ token }: getUserWithTokenDto) {
-    const response = await axios.get(`${this.serverUrl}/room`, {
+  async getRooms({ token, offset = 0, limit = 50 }: getUserWithTokenDto) {
+    const response = await axios.get(`${this.serverUrl}/room?offset=${offset}&limit=${limit}`, {
       headers: {
         'Authorization': `Bearer ${token}`,
       },
@@ -146,6 +169,82 @@ class API {
 
   deleteRoom({ token, roomId }: deleteRoomDto) {
     return axios.delete(`${this.serverUrl}/room/delete/${roomId}`, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+  }
+
+  async getCourses({ token, offset = 0, limit = 50 }: getUserWithTokenDto) {
+    const response = await axios.get(`${this.serverUrl}/course?offset=${offset}&limit=${limit}`, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+
+    return response.data;
+  }
+
+  async createCourse({ token, formData }: createCourseDto) {
+    const response = await axios.post(`${this.serverUrl}/course/create`, { ...formData }, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+
+    return response.data;
+  }
+
+  async updateCourse({ token, formData }: createCourseDto) {
+    const response = await axios.put(`${this.serverUrl}/course/update`, { ...formData }, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+
+    return response.data;
+  }
+
+  deleteCourse({ token, courseId }: deleteCourseDto) {
+    return axios.delete(`${this.serverUrl}/course/delete/${courseId}`, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+  }
+
+  async getFaculties({ token, offset = 0, limit = 50 }: getUserWithTokenDto) {
+    const response = await axios.get(`${this.serverUrl}/faculty?offset=${offset}&limit=${limit}`, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+
+    return response.data;
+  }
+
+  async createFaculty({ token, formData }: createCourseDto) {
+    const response = await axios.post(`${this.serverUrl}/faculty/create`, { ...formData }, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+
+    return response.data;
+  }
+
+  async updateFaculty({ token, formData }: createCourseDto) {
+    const response = await axios.put(`${this.serverUrl}/faculty/update`, { ...formData }, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+
+    return response.data;
+  }
+
+  deleteFaculty({ token, courseId }: deleteCourseDto) {
+    return axios.delete(`${this.serverUrl}/faculty/delete/${courseId}`, {
       headers: {
         'Authorization': `Bearer ${token}`,
       },

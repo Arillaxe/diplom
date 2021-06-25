@@ -1,26 +1,42 @@
-import { Link } from 'react-router-dom';
-import { Pane, Button, Select } from 'evergreen-ui';
+import { ChangeEvent } from 'react';
+import { useHistory } from 'react-router-dom';
+import { Pane, Select, LogOutIcon } from 'evergreen-ui';
 
-const Header  = () => {
+import './styles.css';
+
+const Header = (props: any) => {
+  const { renderMore, renderPagination } = props;
+  const history = useHistory();
+  const currentPage = history.location.pathname.slice(1);
+
+  const updateCurrentPage = (page: string) => {
+    history.push(`/${page}`);
+  }
+
+  const logOut = () => {
+    localStorage.clear();
+    history.push('/');
+  }
 
   return (
-    <Pane background="#101840" display="flex" justifyContent="center">
-      <Pane width="900px" paddingTop="15px" paddingBottom="15px" display="flex">
-        <Select>
-          <option>Пользователи</option>
-          <option>Комнаты</option>
-          <option>Курсы</option>
-          <option>Факультеты</option>
-          <option>Заявки на поселение</option>
-        </Select>
-        {/* <Link to="/users">
-          <Button appearance="minimal" color="#e1e1e1 !important" fontSize="16px" marginRight="10px">Пользователи</Button>
-        </Link>
-        <Link to="/rooms">
-          <Button appearance="minimal" color="#e1e1e1 !important" fontSize="16px" marginRight="10px">Комнаты</Button>
-        </Link>
-        <Button appearance="minimal" color="#e1e1e1 !important" fontSize="16px" marginLeft="auto">Выйти</Button> */}
-      </Pane>
+    <Pane display="flex" justifyContent="space-between" padding="15px" className="header" marginTop="-71px" boxShadow="0 1px 3px 0 rgb(0 0 0 / 20%)">
+      <Select
+        height={41}
+        boxShadow="0 1px 3px 0 rgb(0 0 0 / 20%)"
+        maxWidth={240}
+        value={currentPage}
+        onChange={(e: ChangeEvent<HTMLSelectElement>) => updateCurrentPage(e.target.value)}
+        alignSelf="flex-start"
+      >
+        <option value="users">Пользователи</option>
+        <option value="rooms">Комнаты</option>
+        <option value="courses">Курсы</option>
+        <option value="faculties">Факультеты</option>
+        <option value="requests">Заявки на поселение</option>
+      </Select>
+      {renderPagination && renderPagination()}
+      {renderMore && renderMore()}
+      <div className="logout" onClick={logOut}>Выйти <LogOutIcon marginLeft="10px" /></div>
     </Pane>
   );
 };

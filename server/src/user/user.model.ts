@@ -24,6 +24,48 @@ export class User extends Model {
 
   @Column({
     type: DataType.STRING,
+    allowNull: false,
+  })
+  birthDate: string;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: false,
+  })
+  documentType: string;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: false,
+  })
+  documentData: string;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: false,
+  })
+  faculty: string;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: false,
+  })
+  studyType: string;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: false,
+  })
+  course: string;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: false,
+  })
+  rating: number;
+
+  @Column({
+    type: DataType.STRING,
     unique: true,
   })
   contractNumber: string;
@@ -93,6 +135,13 @@ export class User extends Model {
       name: this.name,
       lastName: this.lastName,
       surname: this.surname,
+      birthDate: this.birthDate,
+      documentType: this.documentType,
+      documentData: this.documentData,
+      faculty: this.faculty,
+      studyType: this.studyType,
+      course: this.course,
+      rating: this.rating,
       contractNumber: this.contractNumber,
       phone: this.phone,
       email: this.email,

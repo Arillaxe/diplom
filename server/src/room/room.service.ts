@@ -6,8 +6,11 @@ import { CreateRoomDto, UpdateRoomDto } from './room.dto';
 export class RoomService {
   constructor(@Inject('ROOM_MODEL') private roomModel: typeof Room) {}
 
-  findAll(): Promise<Room[]> {
-    return this.roomModel.findAll<Room>();
+  async findAll({ offset = 0, limit = 50 } = {}): Promise<{ rooms: Room[], total: number}> {
+    const rooms = await this.roomModel.findAll<Room>({ offset, limit });
+    const total = await this.roomModel.count();
+
+    return { rooms, total };
   }
 
   async create(roomDto: CreateRoomDto) {

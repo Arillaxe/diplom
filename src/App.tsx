@@ -1,29 +1,21 @@
 import { Provider } from 'react-redux';
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Route } from 'react-router-dom';
 import { NotificationContainer } from 'react-notifications';
-import CheckAuth from './lib/CheckAuth';
-import RoleRedirecter from './lib/RoleRedirecter';
+import Redirecter from './lib/Redirecter';
 import store from './lib/store';
-import { Login, Home } from './pages';
+import { Login, Users, Rooms, Courses, Faculties } from './pages';
 import 'react-notifications/lib/notifications.css';
 
 function App() {
   return (
     <Provider store={store}>
       <Router>
-        <CheckAuth />
-        <Switch>
-          <Route path="/login">
-            <Login />
-          </Route>
-          <Route path="/">
-            <RoleRedirecter />
-            <Switch>
-              <Route path="/users"><Home /></Route>
-              <Route path="/rooms"><Home /></Route>
-            </Switch>
-          </Route>
-        </Switch>
+        <Route exact path="/"><Redirecter /></Route>
+        <Route path="/login"><Login /></Route>
+        <Route path="/users"><Users /></Route>
+        <Route path="/rooms"><Rooms /></Route>
+        <Route path="/courses"><Courses /></Route>
+        <Route path="/faculties"><Faculties /></Route>
       </Router>
       <NotificationContainer />
     </Provider>

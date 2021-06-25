@@ -1,8 +1,10 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
+import { useTable } from 'react-table';
 import moment from 'moment';
-import { Pane, Table, Button, EditIcon, IconButton, TrashIcon } from 'evergreen-ui';
+import { Pane, Button, EditIcon, IconButton, TrashIcon } from 'evergreen-ui';
 import { NotificationManager } from 'react-notifications';
 import { AddUser, EditUser, Base } from '..';
+import { Table, More, Pagination } from '../../components';
 import API from '../../lib/api';
 import { formType } from '../AddUser/AddUser';
 
@@ -10,27 +12,44 @@ moment.locale('ru');
 
 const Users = () => {
   const [users, setUsers] = useState([]);
+  const [total, setTotal] = useState(50);
+  const [selectedRows, setSelectedRows] = useState<any[]>([]);
   const [createDialogShown, setCreateDialogShown] = useState(false);
   const [editDialogShown, setEditDialogShown] = useState(false);
   const [editUser, setEditUser] = useState<formType>({
     lastName: '',
       name: '',
       surname: '',
+      birthDate: '',
+      documentType: '',
+      documentData: '',
+      faculty: '',
+      studyType: '',
+      course: '',
+      rating: '100',
       contractNumber: '',
       phone: '',
       email: '',
       roles: [],
   });
 
-  const getUsers = async () => {
+  const getUsers = async (page: number) => {
     const token = localStorage.getItem('token') || '';
-    const users = await API.getUsers({ token });
+    const { users, total } = await API.getUsers({ token, offset: (page - 1) * 50, limit: 50 });
+    const mappedUsers = users.map((user: any) => ({
+      ...user,
+      fullName: `${user.lastName} ${user.name} ${user.surname}`,
+      roles: user.roles.join(' '),
+      createdAt: moment(user.createdAt).fromNow(),
+      updatedAt: moment(user.updatedAt).fromNow(),
+    }));
 
-    setUsers(users);
+    setTotal(total);
+    setUsers(mappedUsers);
   };
 
   useEffect(() => {
-    getUsers();
+    getUsers(1);
   }, []);
 
   const submitCreateUser = async (formData: formType) => {
@@ -42,7 +61,7 @@ const Users = () => {
       NotificationManager.success('Пользователь создан');
 
       setCreateDialogShown(false);
-      getUsers();
+      getUsers(1);
     } catch (e) {
       NotificationManager.error(e.toString());
     }
@@ -57,7 +76,7 @@ const Users = () => {
       NotificationManager.success('Пользователь обновлен');
 
       setEditDialogShown(false);
-      getUsers();
+      getUsers(1);
     } catch (e) {
       NotificationManager.error(e.toString());
     }
@@ -71,48 +90,162 @@ const Users = () => {
 
       NotificationManager.success('Пользователь удален');
 
-      getUsers();
+      getUsers(1);
     } catch (e) {
       NotificationManager.error(e.toString());
     }
   };
 
+  const columns = useMemo(() =>[
+    {
+      Header: 'ФИО',
+      accessor: 'fullName',
+    },
+    {
+      Header: 'Дата рождения',
+      accessor: 'birthDate',
+    },
+    {
+      Header: 'Вид документа',
+      accessor: 'documentType',
+    },
+    {
+      Header: 'Данные документа',
+      accessor: 'documentData',
+    },
+    {
+      Header: 'Факультет',
+      accessor: 'faculty',
+    },
+    {
+      Header: 'Форма обучения',
+      accessor: 'studyType',
+    },
+    {
+      Header: 'Курс',
+      accessor: 'course',
+    },
+    {
+      Header: 'Рейтинг',
+      accessor: 'rating',
+    },
+    {
+      Header: 'Договор',
+      accessor: 'contractNumber',
+    },
+    {
+      Header: 'Телефон',
+      accessor: 'phone',
+    },
+    {
+      Header: 'Почта',
+      accessor: 'email',
+    },
+    {
+      Header: 'Роли',
+      accessor: 'roles',
+    },
+  ], []);
+
+  const moreOptions = [
+    {
+      title: 'Экспортировать таблицу',
+      action: () => {
+        const header = [
+          'ФИО',
+          'Дата рождения',
+          'Вид документа',
+          'Данные документа',
+          'Факультет',
+          'Форма обучения',
+          'Курс',
+          'Рейтинг',
+          'Договор',
+          'Телефон',
+          'Почта',
+          'Роли',
+        ].join(',');
+
+        const rows = users.map((user: any) => {
+          const {
+            fullName,
+            birthDate,
+            documentType,
+            documentData,
+            faculty,
+            studyType,
+            course,
+            rating,
+            contractNumber,
+            phone,
+            email,
+            roles,
+          } = user;
+
+          return [
+            fullName,
+            birthDate,
+            documentType,
+            documentData,
+            faculty,
+            studyType,
+            course,
+            rating,
+            contractNumber,
+            phone,
+            email,
+            roles,
+          ].join(',');
+        });
+
+        const csvContent = 'data:text/csv;charset=utf-8,' + header + '\n' + rows.join('\n');
+        const uri = encodeURI(csvContent)
+        const link = document.createElement('a');
+        link.setAttribute('href', uri);
+        link.setAttribute('download', 'users.xlsx');
+        document.body.appendChild(link);
+        link.click();
+      },
+      isEnabled: () => users.length > 0,
+    },
+    {
+      title: 'Добавить пользователя',
+      action: () => setCreateDialogShown(true),
+      isEnabled: () => true,
+    },
+    {
+      title: 'Редактировать пользователя',
+      action: () => {
+        const { fullName, ...rest } = selectedRows[0];
+        setEditUser({ ...rest, roles: rest.roles.split(' ') });
+        setEditDialogShown(true);
+      },
+      isEnabled: () => selectedRows.length === 1,
+    },
+  ];
+
+  const renderMore = () => (<Pane marginRight="15px"><More options={moreOptions} /></Pane>);
+
+  const onPageClickClick = (page: number) => {
+    getUsers(page);
+    window.scrollTo(0, 0);
+  }
+
+  const renderPagination = () => (
+    <Pane marginLeft="auto" marginRight="15px">
+      <Pagination totalPages={Math.ceil(total / 50)} onNextClick={onPageClickClick} onPrevClick={onPageClickClick}/>
+    </Pane>
+  );
+
+  const onRowSelect = (rows: any) => {
+    setSelectedRows(rows);
+  };
+
   return (
-    <Base>
-      <Pane display="flex" justifyContent="center" marginTop="15px">
+    <Base renderMore={renderMore} renderPagination={renderPagination}>
+      <Pane display="flex" justifyContent="center">
         <Pane width="100%" display="flex" flexDirection="column">
-          <Button appearance="primary" marginBottom="15px" marginRight="15px" alignSelf="flex-end" onClick={() => setCreateDialogShown(true)}>Добавить пользователя</Button>
-          <Table>
-            <Table.Head>
-              <Table.TextHeaderCell>ID</Table.TextHeaderCell>
-              <Table.TextHeaderCell>ФИО</Table.TextHeaderCell>
-              <Table.TextHeaderCell>Договор</Table.TextHeaderCell>
-              <Table.TextHeaderCell>Телефон</Table.TextHeaderCell>
-              <Table.TextHeaderCell>Почта</Table.TextHeaderCell>
-              <Table.TextHeaderCell>Роли</Table.TextHeaderCell>
-              <Table.TextHeaderCell>Создан</Table.TextHeaderCell>
-              <Table.TextHeaderCell>Изменен</Table.TextHeaderCell>
-              <Table.TextHeaderCell></Table.TextHeaderCell>
-            </Table.Head>
-            <Table.Body>
-              {users.map((user: any) => (
-                <Table.Row key={user.id}>
-                  <Table.TextCell>{user.id}</Table.TextCell>
-                  <Table.TextCell>{`${user.lastName} ${user.name} ${user.surname}`}</Table.TextCell>
-                  <Table.TextCell>{user.contractNumber}</Table.TextCell>
-                  <Table.TextCell>{user.phone}</Table.TextCell>
-                  <Table.TextCell>{user.email}</Table.TextCell>
-                  <Table.TextCell>{user.roles.join(' ')}</Table.TextCell>
-                  <Table.TextCell>{moment(user.createdAt).fromNow()}</Table.TextCell>
-                  <Table.TextCell>{moment(user.updatedAt).fromNow()}</Table.TextCell>
-                  <Table.Cell>
-                    <IconButton icon={EditIcon} marginRight="10px" onClick={() => { setEditUser(user); setEditDialogShown(true); }} />
-                    <IconButton icon={TrashIcon} onClick={() => deleteUser(user.id)} />
-                  </Table.Cell>
-                </Table.Row>
-              ))}
-            </Table.Body>
-          </Table>
+          <Table columns={columns} data={users} onRowSelect={onRowSelect} />
         </Pane>
 
         <AddUser isShown={createDialogShown} setIsShown={setCreateDialogShown} onSubmit={submitCreateUser} />

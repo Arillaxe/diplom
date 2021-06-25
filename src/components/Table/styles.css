@@ -1,0 +1,28 @@
+.table {
+  border-collapse: collapse;
+  color: #16325c;
+  background-color: #fff;
+}
+
+.table td, table th {
+  border: 1px solid #d8dde6;
+  padding: 8px;
+}
+
+.table thead {
+  background-color: #eff1f3;
+
+}
+
+.table tr:nth-child(even){
+  background-color: #f9fafb;
+}
+
+.table tbody tr:hover {
+  cursor: pointer;
+  background-color: #ebf4fe;
+}
+
+.table th label, .table td label {
+  margin: 0;
+}

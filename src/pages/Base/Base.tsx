@@ -1,12 +1,12 @@
 import { Header } from '../../components';
 
 const Base = (props: any) => {
-  const { children } = props;
+  const { children, renderMore, renderPagination } = props;
   
   return (
     <div>
-      <Header />
-      <div>{children}</div>
+      <Header renderMore={renderMore} renderPagination={renderPagination} />
+      <div style={{ marginTop: '71px' }}>{children}</div>
     </div>
   );
 };

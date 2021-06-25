@@ -15,10 +15,10 @@ export class Room extends Model {
   floor: number;
 
   @Column({
-    type: DataType.INTEGER,
+    type: DataType.STRING,
     allowNull: false,
   })
-  room: number;
+  room: string;
 
   @Column({
     type: DataType.INTEGER,

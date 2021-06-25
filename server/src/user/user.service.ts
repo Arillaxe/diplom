@@ -15,8 +15,11 @@ export class UserService {
     return this.userModel.findOne<User>({ where: { email } });
   }
 
-  findAll(): Promise<User[]> {
-    return this.userModel.findAll<User>();
+  async findAll({ offset = 0, limit = 50 } = {}): Promise<{ users: User[], total: number }> {
+    const users = await this.userModel.findAll<User>({ offset, limit });
+    const total = await this.userModel.count();
+    
+    return { users, total };
   }
 
   findByLogin(login: string): Promise<User> {

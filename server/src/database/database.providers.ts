@@ -1,6 +1,8 @@
 import { Sequelize } from 'sequelize-typescript';
 import { Room } from '../room/room.model';
 import { User } from '../user/user.model';
+import { Course } from '../course/course.model';
+import { Faculty } from '../faculty/faculty.model';
 import { PasswordReset } from '../auth/passwordReset.model';
 
 export const databaseProviders = [
@@ -16,7 +18,7 @@ export const databaseProviders = [
         database: process.env.DB_DATABASE,
       });
 
-      sequelize.addModels([Room, User, PasswordReset]);
+      sequelize.addModels([Room, User, PasswordReset, Course, Faculty]);
 
       await sequelize.sync();
 
