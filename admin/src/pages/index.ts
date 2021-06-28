@@ -11,6 +11,7 @@ export { default as EditUser } from './EditUser';
 export { default as Faculties } from './Faculties';
 export { default as Home } from './Home';
 export { default as Login } from './Login';
+export { default as Requests } from './Requests';
 export { default as RoomPhoto } from './RoomPhoto';
 export { default as Rooms } from './Rooms';
 export { default as Users } from './Users';

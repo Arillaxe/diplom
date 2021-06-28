@@ -26,6 +26,19 @@ export class RoomController {
     }
   }
 
+  @Get('/all')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.Admin, Role.Dekanat, Role.Student)
+  async all(@Res() res: Response): Promise<any> {
+    try {
+      const { rooms } = await this.roomService.findAll({ offset: 0, limit: 10000 });
+
+      res.json({ rooms });
+    } catch (e) {
+      res.status(400).json(e);
+    }
+  }
+
   @Post('create')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.Admin, Role.Dekanat)

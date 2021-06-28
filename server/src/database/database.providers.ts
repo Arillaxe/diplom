@@ -4,6 +4,7 @@ import { User } from '../user/user.model';
 import { Course } from '../course/course.model';
 import { Faculty } from '../faculty/faculty.model';
 import { PasswordReset } from '../auth/passwordReset.model';
+import { Request } from '../request/request.model';
 
 export const databaseProviders = [
   {
@@ -18,7 +19,7 @@ export const databaseProviders = [
         database: process.env.DB_DATABASE,
       });
 
-      sequelize.addModels([Room, User, PasswordReset, Course, Faculty]);
+      sequelize.addModels([Room, User, PasswordReset, Course, Faculty, Request]);
 
       await sequelize.sync();
 

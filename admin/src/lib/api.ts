@@ -250,6 +250,24 @@ class API {
       },
     });
   }
+
+  async getRequests({ token, offset = 0, limit = 50 }: any) {
+    const response = await axios.get(`${this.serverUrl}/request?offset=${offset}&limit=${limit}`, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+
+    return response.data;
+  }
+
+  updateRequestStatus({ token, id, status }: any) {
+    return axios.put(`${this.serverUrl}/request/updateStatus/${id}`, { status }, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+  }
 }
 
 const apiInstance = new API(process.env.REACT_APP_SERVER_HOST || '');

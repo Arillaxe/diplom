@@ -34,7 +34,7 @@ export class AuthController {
   }
 
   @Post('createUser')
-  // @UseGuards(JwtAuthGuard, RolesGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.Admin, Role.Dekanat)
   async register(@Body() createUserDto: CreateUserDto) {
     try {

@@ -6,7 +6,9 @@ services:
     image: postgres
     restart: always
     volumes:
-      - ./db/:/var/lib/postgresql
+      - pgdata:/var/lib/postgresql/data
+      - pgconf:/etc/postgresql
+      - pglog:/var/log/postgresql
     environment:
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_USER: ${POSTGRES_USER}
@@ -30,19 +32,40 @@ services:
       PASSWORD_RESET_TTL: ${PASSWORD_RESET_TTL}
     ports:
       - "${BACKEND_PORT}:${BACKEND_PORT}"
-      # - "9229:9229"
     depends_on: 
       - db
 
-  frontend:
-    build: ./
+  admin:
+    build: ./admin
     volumes:
       - /app/node_modules/
-      - ./:/app
+      - ./admin:/app
     environment:
       CHOKIDAR_USEPOLLING: 'true'
       REACT_APP_SERVER_HOST: http://localhost:${BACKEND_PORT}
     ports:
-      - "${FRONTEND_PORT}:${FRONTEND_PORT}"
+      - "${ADMIN_PORT}:${ADMIN_PORT}"
     depends_on:
       - backend
+
+  client:
+    build: ./client
+    volumes:
+      - /app/node_modules/
+      - ./client:/app
+    environment:
+      CHOKIDAR_USEPOLLING: 'true'
+      PORT: ${CLIENT_PORT}
+      REACT_APP_SERVER_HOST: http://localhost:${BACKEND_PORT}
+    ports:
+      - "${CLIENT_PORT}:${CLIENT_PORT}"
+    depends_on:
+      - backend
+
+volumes:
+  pgdata:
+    driver: local
+  pgconf:
+    driver: local
+  pglog: 
+    driver: local
